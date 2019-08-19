@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" 
+	version="3.0">
+	  <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+	<listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+ 	</listener>
+ 	
+    <!-- 加载spring配置文件 -->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            classpath*:/spring/spring-common.xml,
+            classpath*:/spring/shiro.xml
+        </param-value>
+    </context-param>
+     <!--
+       DelegatingFilterProxy类是一个代理类，所有的请求都会首先发到这个filter代理
+                     然后再按照"filter-name"委派到spring中的这个bean。
+                     在Spring中配置的bean的name要和web.xml中的<filter-name>一样.
+	   targetFilterLifecycle，是否由spring来管理bean的生命周期，设置为true有个好处，可以调用spring后续的bean
+	-->
+    <filter>  
+	    <filter-name>shiroFilter</filter-name>  
+	    <filter-class>  
+	        org.springframework.web.filter.DelegatingFilterProxy  
+	    </filter-class>  
+ 	     <init-param>  
+	    <param-name>targetFilterLifecycle</param-name>  
+	    <param-value>true</param-value>  
+	    </init-param>  
+   </filter>  
+
+	<filter-mapping>  
+	    <filter-name>shiroFilter</filter-name>  
+	    <url-pattern>/*</url-pattern>  
+	</filter-mapping>  
+	    <!-- spring MVC servlet -->
+    <servlet>
+        <servlet-name>spring-mvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <description>spring mvc</description>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath*:/spring/spring-servlet.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    
+     <filter>  
+    <filter-name>openSession</filter-name>  
+    <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>  
+  </filter>  
+  <filter-mapping>  
+    <filter-name>openSession</filter-name>  
+    <url-pattern>/*</url-pattern>  
+  </filter-mapping>  
+	<servlet-mapping>
+		<servlet-name>spring-mvc</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	   <welcome-file-list>
+        <welcome-file>login</welcome-file>
+    </welcome-file-list>
+      <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/upload/*</url-pattern>
+    </servlet-mapping>
+	  <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/html/*</url-pattern>
+    </servlet-mapping>
+   <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/js/*</url-pattern>
+    </servlet-mapping>
+      <servlet-mapping>
+	  <servlet-name>default</servlet-name>
+        <url-pattern>/css/*</url-pattern>
+    </servlet-mapping>
+       <servlet-mapping>
+      <servlet-name>default</servlet-name>
+        <url-pattern>/images/*</url-pattern>
+    </servlet-mapping>
+    <error-page>
+       <error-code>404</error-code>
+       <location>/html/error/404.html</location>
+    </error-page>
+     <error-page>
+       <error-code>500</error-code>
+       <location>/html/error/500.html</location>
+    </error-page>
+</web-app>
